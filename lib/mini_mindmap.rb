@@ -4,50 +4,70 @@ module MiniMindmap
   class Error < StandardError; end
 
   class Mindmap
+    @@compiles_meta = {
+      basic: {
+        id: "basic",
+        description: "basic expression",
+        syntax: /^(\*+)\s+([^\s]+.*)$/,
+        processor: "basic_processor",
+      }
+    }
+    def self.compiles_meta
+      @@compiles_meta
+    end
+
     def initialize(name, dsl)
       @name = name
       @dsl = dsl
 
       yield(self) if block_given?
-
-      # self.compile
     end
 
     attr_accessor(:name, :dsl, :output, :nodes)
 
-    def node(code)
+    def compile(code)
     	# TODO  增加拓展语法支持 label等自定义
     	# 同步Test也要更新
-      node_express = /^(\*+)\s+([^\s]+.*)$/
-      node_express =~ code.strip
-
-      level_prefix = $1
-      content = $2
-      level = level_prefix.length
-      node = [level, content]
+      case code.strip
+      when @@compiles_meta[:basic][:syntax]
+        level_prefix = $1
+        content = $2
+        level = level_prefix.length
+        node = [@@compiles_meta[:basic][:id],level, content]
+      else
+        # pass
+      end
     end
 
-    def dsl_to_nodes
+    def basic_processor
       nodes = []
       stack = []
       dsl = @dsl.split("\n")
       dsl.each_with_index do |code, current_index|
-        current = self.node(code)
-        unless stack.empty?
-          top = stack.pop
-          if (current[0] > top[0])
-            (nodes << "#{top[1]} -> #{current[1]}")
-            stack.push(top)
-          else
-            while (current[0] <= top[0]) and (not stack.empty?)
-              top = stack.pop
+
+        if not code.strip.empty?
+          current = self.compile(code)
+
+          unless stack.empty?
+            top = stack.pop
+            if (current[1] > top[1])
+              (nodes << "#{top[2]} -> #{current[2]}")
+              stack.push(top)
+            else
+              while (current[1] <= top[1]) and (not stack.empty?)
+                top = stack.pop
+              end
+              (nodes << "#{top[2]} -> #{current[2]}") if (current[1] > top[1])
             end
-            (nodes << "#{top[1]} -> #{current[1]}") if (current[0] > top[0])
           end
+          stack.push(current)
         end
-        stack.push(current)
       end
       @nodes = nodes
+    end
+
+    def processor
+      self.send @@compiles_meta[:basic][:processor]  
     end
 
     def package_nodes
@@ -58,8 +78,8 @@ module MiniMindmap
       File.open("#{@name}.dot", "w") { |f| f.write(package_nodes) }
     end
 
-    def compile
-      self.dsl_to_nodes
+    def run_tasks
+      self.processor
       self.package_nodes
       self.nodes_to_doc
     end
@@ -69,6 +89,7 @@ module MiniMindmap
     end
 
     def export
+      self.run_tasks
       export = self.export_cmd
       puts("[command]: #{export}")
       `#{export}`

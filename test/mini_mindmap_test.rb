@@ -9,8 +9,11 @@ describe "Mindmap Basic Attrs Test" do
 end
 
 
-describe "Mindmap Methods Test" do
+describe "Mindmap Attrs Test" do
 	before do
+    # const
+    @basic_syntax_id = MiniMindmap::Mindmap.compiles_meta[:basic][:id]
+    @code_compiled = [@basic_syntax_id, 2,"test long expression"]
 	 	@demo_dsl = %Q{
 	 	* A
 	 	** B
@@ -28,27 +31,111 @@ describe "Mindmap Methods Test" do
   	assert_equal @mindmap.dsl, @demo_dsl
   end
 
-  it "test node method normal code" do
-		assert_equal @mindmap.node("** test"), [2,"test"]
-  end
-
-  it "test node method long code" do
-		assert_equal @mindmap.node("** test long expression"), [2,"test long expression"]
-  end
-
-  it "test node method code with white space1" do
-		assert_equal @mindmap.node("** test long expression   "), [2,"test long expression"]
-  end
-
-  it "test node method code with white space2" do
-		assert_equal @mindmap.node("   ** test long expression   "), [2,"test long expression"]
-  end
-
-
   it "test nodes write and read" do
-  	mock_nodes = [[1,"A"],[2,"B"]]
+  	mock_nodes = @code_compiled
   	@mindmap.nodes = mock_nodes
     assert_equal   @mindmap.nodes, mock_nodes
+  end
+end
+
+describe "Mindmap Compile Test" do
+	before do
+    # const
+    @basic_syntax_id = MiniMindmap::Mindmap.compiles_meta[:basic][:id]
+    @code_compiled = [@basic_syntax_id, 2,"test long expression"]
+	 	@demo_dsl = %Q{
+	 	* A
+	 	** B
+	 	}
+
+	 	@name = "demo"
+    @mindmap = MiniMindmap::Mindmap.new(@name, @demo_dsl)
+  end
+
+  it "test compile: normal code" do
+		assert_equal @mindmap.compile("** test"), [@basic_syntax_id, 2,"test"]
+  end
+
+  it "test compile: long code" do
+		assert_equal @mindmap.compile("** test long expression"), @code_compiled
+  end
+
+  it "test compile: code with white space1" do
+		assert_equal @mindmap.compile("** test long expression   "), @code_compiled
+  end
+
+  it "test compile: code with more white space" do
+		assert_equal @mindmap.compile("   ** test long expression   "), @code_compiled
+  end
+end
+
+
+describe "Mindmap Processtor Test" do
+	before do
+    # const
+    @basic_syntax_id = MiniMindmap::Mindmap.compiles_meta[:basic][:id]
+    @code_compiled = [@basic_syntax_id, 2,"test long expression"]
+	 	@demo_dsl = %Q{
+	 	* A
+	 	** B
+	 	}
+
+	 	@name = "demo"
+    @mindmap = MiniMindmap::Mindmap.new(@name, @demo_dsl)
+  end
+
+  it "test basic processor" do
+  	nodes = @mindmap.basic_processor
+    assert_equal   @mindmap.nodes, ["A -> B"]
+  end
+
+  it "test basic processor" do
+  	m = @mindmap
+  	m.dsl = %Q{
+		 	* A
+		 	** B
+		 	*** C
+		 	**** D
+	 	}
+	 	m.basic_processor
+    assert_equal   m.nodes, ["A -> B", "B -> C", "C -> D"]
+  end
+
+  it "test basic processor" do
+  	m = @mindmap
+  	m.dsl = %Q{
+		 	* A
+		 	** B
+		 	*** C
+		 	* D
+		 	** E
+		 	*** F
+	 	}
+	 	m.basic_processor
+    assert_equal   m.nodes, ["A -> B", "B -> C", "D -> E", "E -> F"]
+  end
+
+end
+
+
+describe "Mindmap Package Nodes Test" do
+	before do
+    # const
+    @basic_syntax_id = MiniMindmap::Mindmap.compiles_meta[:basic][:id]
+    @code_compiled = [@basic_syntax_id, 2,"test long expression"]
+	 	@demo_dsl = %Q{
+	 	* A
+	 	** B
+	 	}
+
+	 	@name = "demo"
+    @mindmap = MiniMindmap::Mindmap.new(@name, @demo_dsl)
+  end
+
+  it "test pkg nodes" do
+  	@mindmap.processor
+  	pkg_nodes = @mindmap.package_nodes
+    assert_equal   pkg_nodes, "digraph demo {\nA -> B\n}"
   end
 
 end
