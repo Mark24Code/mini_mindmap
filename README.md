@@ -52,6 +52,10 @@ demo = MiniMindmap::Mindmap.new(name,dsl,output)
 demo.export # export files to dir
 
 ```
+output img
+
+![minimap](https://github.com/Mark24Code/mini_mindmap/blob/master/examples/mindmap.png)
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
