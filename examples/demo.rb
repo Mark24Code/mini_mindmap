@@ -1,29 +1,22 @@
-react_mind = RubyMindmap::Mindmap.new do |m|
-  m.name = 'React'
-  m.output = {
-    format: 'png',
-    dir: './out'
-  }
+require_relative "helper.rb"
+require "mini_mindmap"
+
+name = 'React'
+output = {
+  format: 'png',
+  dir: "#{Dir.home}/mindmap_test/work"
+}
 
 
-  m.dsl = <<-Mindmap
-    * React
-    ** 生命周期
-    *** ComponentDidMount
-    **** ComponentWillMount
-    ***** AAAComponentWillMount
-    ** BBBB
-    *** CCCCC
-    **** DDDD
-    ***** FFFF
-    ******* KK
-    ** OPLL
-    * GO
-    ** Woker
-    *** KKKKKLLL
-    * CASIO
-    * KO
-  Mindmap
-end
+dsl = %Q{
+  * MiniMindmap
+  ** name
+  ** DSL
+  ** output
+  *** dir
+  *** format
+}
 
-react_mind.export
+demo = MiniMindmap::Mindmap.new(name,dsl,output)
+
+demo.export
