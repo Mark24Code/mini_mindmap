@@ -5,7 +5,7 @@ class MiniMindmapTest < Minitest::Test
     refute_nil ::MiniMindmap::VERSION
   end
 
-  def test_it_does_something_useful
-    assert false
+  def test_it_has_a_author
+  	assert_equal "Mark24",::MiniMindmap::AUTHOR
   end
 end
