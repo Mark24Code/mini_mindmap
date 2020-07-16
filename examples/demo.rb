@@ -1,12 +1,14 @@
 require_relative "helper.rb"
 require "mini_mindmap"
 
-name = 'React'
+name = 'mindmap' # filename
+
 output = {
   format: 'png',
-  dir: "#{Dir.home}/mindmap_test/work"
+  dir: "#{Dir.home}/mindmap" # output dir
 }
 
+# online
 
 dsl = %Q{
   * MiniMindmap
@@ -19,4 +21,4 @@ dsl = %Q{
 
 demo = MiniMindmap::Mindmap.new(name,dsl,output)
 
-demo.export
+demo.export # export files to dir
