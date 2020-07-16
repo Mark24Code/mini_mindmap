@@ -1,8 +1,10 @@
 # MiniMindmap
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/mini_mindmap`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Prepare
 
-TODO: Delete this and the text above, and describe your gem
+You need install graphviz first.
+
+[graphviz download](http://www.graphviz.org/download/)
 
 ## Installation
 
