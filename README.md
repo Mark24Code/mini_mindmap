@@ -22,8 +22,34 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+DSL Example
 
+```ruby
+require "mini_mindmap"
+
+name = 'mindmap' # filename
+
+output = {
+  format: 'png',
+  dir: "#{Dir.home}/mindmap" # output dir
+}
+
+# online
+
+dsl = %Q{
+  * MiniMindmap
+  ** name
+  ** DSL
+  ** output
+  *** dir
+  *** format
+}
+
+demo = MiniMindmap::Mindmap.new(name,dsl,output)
+
+demo.export # export files to dir
+
+```
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

@@ -115,6 +115,20 @@ describe "Mindmap Processtor Test" do
     assert_equal   m.nodes, ["A -> B", "B -> C", "D -> E", "E -> F"]
   end
 
+  it "test basic processor" do
+    m = @mindmap
+    m.dsl = %Q{
+      * MiniMindmap
+      ** name
+      ** DSL
+      ** output
+      *** dir
+      *** format
+    }
+    m.basic_processor
+    assert_equal   m.nodes, ["MiniMindmap -> name", "MiniMindmap -> DSL", "MiniMindmap -> output", "output -> dir", "output -> format"]
+  end
+
 end
 
 

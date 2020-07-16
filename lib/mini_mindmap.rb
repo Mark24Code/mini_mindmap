@@ -1,4 +1,5 @@
 require "mini_mindmap/version"
+require "fileutils"
 
 module MiniMindmap
   class Error < StandardError; end
@@ -16,11 +17,12 @@ module MiniMindmap
       @@compiles_meta
     end
 
-    def initialize(name, dsl)
+    def initialize(name, dsl, output=nil)
+
       @name = name
       @dsl = dsl
-      @output = {
-        dir: ".",
+      @output = output || {
+        dir: Dir.home,
         format: "png"
       }
 
@@ -31,7 +33,6 @@ module MiniMindmap
 
     def compile(code)
     	# TODO  增加拓展语法支持 label等自定义
-    	# 同步Test也要更新
       case code.strip
       when @@compiles_meta[:basic][:syntax]
         level_prefix = $1
@@ -54,14 +55,18 @@ module MiniMindmap
 
           unless stack.empty?
             top = stack.pop
-            if (current[1] > top[1])
-              (nodes << "#{top[2]} -> #{current[2]}")
+            if current[1] > top[1]
+              nodes << "#{top[2]} -> #{current[2]}"
               stack.push(top)
             else
               while (current[1] <= top[1]) and (not stack.empty?)
                 top = stack.pop
               end
-              (nodes << "#{top[2]} -> #{current[2]}") if (current[1] > top[1])
+              if current[1] > top[1]
+                nodes << "#{top[2]} -> #{current[2]}"
+                stack.push top
+              end
+              
             end
           end
           stack.push(current)
@@ -79,7 +84,8 @@ module MiniMindmap
     end
 
     def nodes_to_doc
-      output_dir = File.expand_path(@output[:dir], __dir__)
+      output_dir = File.absolute_path(@output[:dir])
+      FileUtils::mkdir_p output_dir
       output_file = File.join(output_dir, "#{@name}.dot")
 
       File.open("#{output_file}", "w") { |f| f.write(package_nodes) }
@@ -92,7 +98,7 @@ module MiniMindmap
     end
 
     def export_cmd
-      output_dir = File.expand_path(@output[:dir], __dir__)
+      output_dir = @output[:dir]
       output_file = File.join(output_dir, "#{@name}.#{@output[:format]}")
 
       output_dotfile = File.join(output_dir, "#{@name}.dot")
@@ -102,6 +108,7 @@ module MiniMindmap
     def export
       self.run_tasks
       export = self.export_cmd
+
       puts("[command]: #{export}")
       `#{export}`
     end
