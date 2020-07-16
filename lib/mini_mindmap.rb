@@ -29,7 +29,7 @@ module MiniMindmap
       yield(self) if block_given?
     end
 
-    attr_accessor(:name, :dsl, :output, :nodes)
+    attr_accessor(:name, :dsl, :output, :nodes, :declares)
 
     def compile(code)
     	# TODO  增加拓展语法支持 label等自定义
@@ -45,25 +45,32 @@ module MiniMindmap
     end
 
     def basic_processor
+      declares = [];
       nodes = []
       stack = []
       dsl = @dsl.split("\n")
       dsl.each_with_index do |code, current_index|
 
         if not code.strip.empty?
+          current_id = current_index
           current = self.compile(code)
+          current << current_id
+
+    
+          current_declare = "node#{current_id}[label=\"#{current[2]}\"]";
+          declares.push(current_declare)
 
           unless stack.empty?
             top = stack.pop
             if current[1] > top[1]
-              nodes << "#{top[2]} -> #{current[2]}"
+              nodes << "node#{top[3]} -> node#{current[3]}"
               stack.push(top)
             else
               while (current[1] <= top[1]) and (not stack.empty?)
                 top = stack.pop
               end
               if current[1] > top[1]
-                nodes << "#{top[2]} -> #{current[2]}"
+                nodes << "node#{top[3]} -> node#{current[3]}"
                 stack.push top
               end
               
@@ -72,6 +79,7 @@ module MiniMindmap
           stack.push(current)
         end
       end
+      @declares = declares
       @nodes = nodes
     end
 
@@ -80,7 +88,7 @@ module MiniMindmap
     end
 
     def package_nodes
-      "digraph #{@name} {\n#{@nodes.join("\n")}\n}"
+      "digraph #{@name} {\n#{@declares.join("\n")}\n#{@nodes.join("\n")}\n}"
     end
 
     def nodes_to_doc

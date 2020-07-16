@@ -86,7 +86,7 @@ describe "Mindmap Processtor Test" do
 
   it "test basic processor" do
   	nodes = @mindmap.basic_processor
-    assert_equal   @mindmap.nodes, ["A -> B"]
+    assert_equal   @mindmap.nodes, ["node1 -> node2"]
   end
 
   it "test basic processor" do
@@ -98,7 +98,7 @@ describe "Mindmap Processtor Test" do
 		 	**** D
 	 	}
 	 	m.basic_processor
-    assert_equal   m.nodes, ["A -> B", "B -> C", "C -> D"]
+    assert_equal   m.nodes, ["node1 -> node2", "node2 -> node3", "node3 -> node4"]
   end
 
   it "test basic processor" do
@@ -112,7 +112,8 @@ describe "Mindmap Processtor Test" do
 		 	*** F
 	 	}
 	 	m.basic_processor
-    assert_equal   m.nodes, ["A -> B", "B -> C", "D -> E", "E -> F"]
+    assert_equal   m.nodes, ["node1 -> node2", "node2 -> node3", "node4 -> node5", "node5 -> node6"]
+
   end
 
   it "test basic processor" do
@@ -126,7 +127,7 @@ describe "Mindmap Processtor Test" do
       *** format
     }
     m.basic_processor
-    assert_equal   m.nodes, ["MiniMindmap -> name", "MiniMindmap -> DSL", "MiniMindmap -> output", "output -> dir", "output -> format"]
+    assert_equal   m.nodes, ["node1 -> node2", "node1 -> node3", "node1 -> node4", "node4 -> node5", "node4 -> node6"]
   end
 
 end
@@ -149,7 +150,7 @@ describe "Mindmap Package Nodes Test" do
   it "test pkg nodes" do
   	@mindmap.processor
   	pkg_nodes = @mindmap.package_nodes
-    assert_equal   pkg_nodes, "digraph demo {\nA -> B\n}"
+    assert_equal   pkg_nodes, "digraph demo {\nnode1[label=\"A\"]\nnode2[label=\"B\"]\nnode1 -> node2\n}"
   end
 
 end

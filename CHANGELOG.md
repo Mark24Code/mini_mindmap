@@ -1,6 +1,10 @@
+## 0.3.0
+
+* Change to node style to export dotfile.
+
 ## 0.2.0
 
-* Export mindmap
+* Export mindmap.
 
 ## 0.1.0
 
