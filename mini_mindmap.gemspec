@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{A kind of DSL to generate mindmap.}
   spec.description   = %q{[Experimenting!] A kind of DSL to generate mindmap. Depend on Graphviz.}
-  spec.homepage      = "https://github.com/Mark24Code/mini_mindmap"
+  spec.homepage      = "https://mark24code.github.io/mini_mindmap/"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
 
