@@ -19,6 +19,10 @@ module MiniMindmap
     def initialize(name, dsl)
       @name = name
       @dsl = dsl
+      @output = {
+        dir: ".",
+        format: "png"
+      }
 
       yield(self) if block_given?
     end
@@ -75,7 +79,10 @@ module MiniMindmap
     end
 
     def nodes_to_doc
-      File.open("#{@name}.dot", "w") { |f| f.write(package_nodes) }
+      output_dir = File.expand_path(@output[:dir], __dir__)
+      output_file = File.join(output_dir, "#{@name}.dot")
+
+      File.open("#{output_file}", "w") { |f| f.write(package_nodes) }
     end
 
     def run_tasks
@@ -85,7 +92,11 @@ module MiniMindmap
     end
 
     def export_cmd
-      "dot #{@name}.dot -T #{@output[:format]} -o #{@name}.#{@output[:format]}"
+      output_dir = File.expand_path(@output[:dir], __dir__)
+      output_file = File.join(output_dir, "#{@name}.#{@output[:format]}")
+
+      output_dotfile = File.join(output_dir, "#{@name}.dot")
+      "dot #{output_dotfile} -T #{@output[:format]} -o #{output_file}"
     end
 
     def export

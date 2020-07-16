@@ -139,3 +139,27 @@ describe "Mindmap Package Nodes Test" do
   end
 
 end
+
+
+describe "Mindmap Export Command Test" do
+	before do
+    # const
+	 	@demo_dsl = %Q{
+	 	* A
+	 	** B
+	 	}
+
+	 	@name = "demo"
+    @mindmap = MiniMindmap::Mindmap.new(@name, @demo_dsl)
+  end
+
+  it "test export cmd" do
+    output_dir = File.expand_path(@mindmap.output[:dir], 'lib')
+    output_file = File.join(output_dir, "#{@name}.#{@mindmap.output[:format]}")
+
+    output_dotfile = File.join(output_dir, "#{@name}.dot")
+
+    assert_equal   @mindmap.export_cmd, "dot #{output_dotfile} -T #{@mindmap.output[:format]} -o #{output_file}"
+  end
+
+end
