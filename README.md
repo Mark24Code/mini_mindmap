@@ -34,15 +34,6 @@ PlantUML Mindmap Syntax
 
 ```
 
-Support Markdown Title Syntax
-
-```
-# Subject
-## Foo
-## Bar
-
-```
-
 Suppo Annotation with //
 
 ```

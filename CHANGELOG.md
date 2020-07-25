@@ -1,3 +1,12 @@
+## 0.6.0
+
+* Remove Markdown title support syntax
+
+## 0.5.0
+
+* Add annotion syntax
+* Add markdown title support syntax
+
 ## 0.4.1
 
 * Fix name bug.
