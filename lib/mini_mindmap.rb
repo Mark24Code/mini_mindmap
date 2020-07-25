@@ -12,6 +12,12 @@ module MiniMindmap
         description: "basic expression",
         syntax: /^(\*+)\s+([^\s]*[^\[\]]*)\s*(\[.*\])*\s*$/,
         processor: "basic_processor",
+      },
+      annotation: {
+        id: "annotation",
+        description: "annotation expression",
+        syntax: /^\s*\/\/.*\s*/,
+        processor: "annotation_processor",
       }
     }
     def self.compiles_meta
@@ -52,8 +58,10 @@ module MiniMindmap
         end
       
         return node
+      when @@compiles_meta[:annotation][:syntax]
+        # pass annotation  
       else
-        # pass
+        # rest pass
       end
     end
 
