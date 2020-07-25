@@ -75,6 +75,9 @@ module MiniMindmap
         if not code.strip.empty?
           current_id = current_index
           current = self.compile(code)
+          if not current
+            next
+          end
           current.unshift(current_id)
           # [id, type_id, level, content, config]
 
