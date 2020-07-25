@@ -22,6 +22,37 @@ Or install it yourself as:
 
     $ gem install mini_mindmap
 
+## Syntax
+
+PlantUML Mindmap Syntax
+
+```
+
+* Subject
+** Foo
+** Bar
+
+```
+
+Support Markdown Title Syntax
+
+```
+# Subject
+## Foo
+## Bar
+
+```
+
+Suppo Annotation with //
+
+```
+
+// one line annotation
+
+** Foo // you can add annotation here too
+
+```
+
 ## Usage
 
 DSL Example
