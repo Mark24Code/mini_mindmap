@@ -1,4 +1,5 @@
 require "mini_mindmap/version"
+require "mini_mindmap/utils/deep_merge"
 require "fileutils"
 
 module MiniMindmap
@@ -9,7 +10,7 @@ module MiniMindmap
       basic: {
         id: "basic",
         description: "basic expression",
-        syntax: /^(\*+)\s+([^\s]+.*)$/,
+        syntax: /^(\*+)\s+([^\s]*[^\[\]]*)\s*(\[.*\])*\s*$/,
         processor: "basic_processor",
       }
     }
@@ -17,19 +18,24 @@ module MiniMindmap
       @@compiles_meta
     end
 
-    def initialize(name, dsl, output=nil)
+    def initialize(name, dsl,output={},config={})
 
       @name = name
       @dsl = dsl
-      @output = output || {
+      @config =  {
+        rankdir: 'LR', # "TB", "LR", "BT", "RL", 分别对应于从上到下，从左到右，从下到上和从右到左绘制的有向图
+        node: {},
+        edge: {}
+      }.deep_merge(config)
+      @output = {
         dir: Dir.home,
         format: "png"
-      }
+      }.deep_merge(output) 
 
       yield(self) if block_given?
     end
 
-    attr_accessor(:name, :dsl, :output, :nodes, :declares)
+    attr_accessor(:name, :dsl, :config, :output, :nodes, :declares)
 
     def compile(code)
     	# TODO  增加拓展语法支持 label等自定义
@@ -37,8 +43,15 @@ module MiniMindmap
       when @@compiles_meta[:basic][:syntax]
         level_prefix = $1
         content = $2
+        config = $3
         level = level_prefix.length
         node = [@@compiles_meta[:basic][:id],level, content]
+
+        if config
+          node.push(config)
+        end
+      
+        return node
       else
         # pass
       end
@@ -54,23 +67,32 @@ module MiniMindmap
         if not code.strip.empty?
           current_id = current_index
           current = self.compile(code)
-          current << current_id
+          current.unshift(current_id)
+          # [id, type_id, level, content, config]
 
     
-          current_declare = "node#{current_id}[label=\"#{current[2]}\"]";
+          current_declare = "node#{current_id}[label=\"#{current[3]}\"]";
           declares.push(current_declare)
 
           unless stack.empty?
             top = stack.pop
-            if current[1] > top[1]
-              nodes << "node#{top[3]} -> node#{current[3]}"
+            if current[2] > top[2]
+              node_line = "node#{top[0]} -> node#{current[0]}"
+              if current.length >=5
+                node_line += " #{current[4]}"
+              end
+              nodes << node_line 
               stack.push(top)
             else
-              while (current[1] <= top[1]) and (not stack.empty?)
+              while (current[2] <= top[2]) and (not stack.empty?)
                 top = stack.pop
               end
-              if current[1] > top[1]
-                nodes << "node#{top[3]} -> node#{current[3]}"
+              if current[2] > top[2]
+                node_line = "node#{top[0]} -> node#{current[0]}"
+                if current.length >=5
+                  node_line += " #{current[4]}"
+                end
+                nodes << node_line 
                 stack.push top
               end
               
@@ -88,7 +110,9 @@ module MiniMindmap
     end
 
     def package_nodes
-      "digraph #{@name} {\n#{@declares.join("\n")}\n#{@nodes.join("\n")}\n}"
+      node_config = @config[:node].map {|k,v| "#{k}=\"#{v}\""}.join(",")
+      edge_config = @config[:edge].map {|k,v| "#{k}=\"#{v}\""}.join(",")
+      "digraph #{@name} {\nrankdir = #{@config[:rankdir]};\nnode [#{node_config}];\nedge [#{edge_config}];\n#{@declares.join("\n")}\n#{@nodes.join("\n")}\n}"
     end
 
     def nodes_to_doc

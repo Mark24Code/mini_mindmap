@@ -150,7 +150,7 @@ describe "Mindmap Package Nodes Test" do
   it "test pkg nodes" do
   	@mindmap.processor
   	pkg_nodes = @mindmap.package_nodes
-    assert_equal   pkg_nodes, "digraph demo {\nnode1[label=\"A\"]\nnode2[label=\"B\"]\nnode1 -> node2\n}"
+    assert_equal   pkg_nodes, "digraph demo {\nrankdir = LR;\nnode [];\nedge [];\nnode1[label=\"A\"]\nnode2[label=\"B\"]\nnode1 -> node2\n}"
   end
 
 end

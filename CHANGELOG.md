@@ -1,3 +1,7 @@
+## 0.4.0
+
+* Add Config Field with `node` ,`edge`. You can config fonts sharp etc.
+
 ## 0.3.0
 
 * Change to node style to export dotfile.
