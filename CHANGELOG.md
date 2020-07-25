@@ -1,6 +1,12 @@
+## 0.4.1
+
+* Fix name bug.
+
 ## 0.4.0
 
 * Add Config Field with `node` ,`edge`. You can config fonts sharp etc.
+* Also support add attrs http://www.graphviz.org/doc/info/attrs.html
+ now we can write config like `** name [color=red]`
 
 ## 0.3.0
 
