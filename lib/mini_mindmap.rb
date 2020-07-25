@@ -10,7 +10,7 @@ module MiniMindmap
       basic: {
         id: "basic",
         description: "basic expression",
-        syntax: /^(\*+)\s+([^\s]*[^\[\]]*)\s*(\[.*\])*\s*$/,
+        syntax: /^([\*|\#]+)\s+([^\s]*[^\[\]]*)\s*(\[.*\])*\s*(\/\/.*)*\s*$/,
         processor: "basic_processor",
       },
       annotation: {
