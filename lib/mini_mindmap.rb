@@ -112,7 +112,7 @@ module MiniMindmap
     def package_nodes
       node_config = @config[:node].map {|k,v| "#{k}=\"#{v}\""}.join(",")
       edge_config = @config[:edge].map {|k,v| "#{k}=\"#{v}\""}.join(",")
-      "digraph #{@name} {\nrankdir = #{@config[:rankdir]};\nnode [#{node_config}];\nedge [#{edge_config}];\n#{@declares.join("\n")}\n#{@nodes.join("\n")}\n}"
+      "digraph \"#{@name}\" {\nrankdir = #{@config[:rankdir]};\nnode [#{node_config}];\nedge [#{edge_config}];\n#{@declares.join("\n")}\n#{@nodes.join("\n")}\n}"
     end
 
     def nodes_to_doc
