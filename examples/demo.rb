@@ -22,8 +22,8 @@ output = {
 # online
 
 dsl = %Q{
-  # MiniMindmap
-  ## name [color=red]
+  * MiniMindmap
+  ** name [color=red]
   ** DSL // this is annotion
   ** output
   *** dir
