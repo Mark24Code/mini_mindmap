@@ -26,11 +26,13 @@ Or install it yourself as:
 
 PlantUML Mindmap Syntax
 
+With Graphviz Config Syntax
+
 ```
 
 * Subject
 ** Foo
-** Bar
+** Bar [color=red] 
 
 ```
 
